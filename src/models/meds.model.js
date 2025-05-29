@@ -5,9 +5,10 @@ export const findAllMeds = async () => {
     return rows;
 };
 
-export const createMed = async ({ name, dosage, category_id }) => {
+export const createMed = async (medData) => {
+    const { name, dosage, category_id } = medData;
     const { rows } = await pool.query(
-        'INSERT INT medication (name, dosage, category_id) VALUES ($1, $2, $3) RETURNING *',
+        'INSERT INTO medication (name, dosage, category_id) VALUES ($1, $2, $3) RETURNING *',
         [name, dosage, category_id]
     );
     return rows[0];
@@ -41,7 +42,7 @@ export const updateMed = async (medication_id, medData) => {
 
 export const deleteMed = async (medication_id) => {
     const { rows } = await pool.query(
-        'DELETE FROM medicatio WHERE medication_id = $1 RETURNING *',
+        'DELETE FROM medication WHERE medication_id = $1 RETURNING *',
         [medication_id]
     );
     return rows[0]; // puede ser undefined si no se encuentra

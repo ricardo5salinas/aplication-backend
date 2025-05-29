@@ -8,7 +8,7 @@ export const findAllUsers = async () => {
 export const createUser = async (userData) => {
     const { identity_card, first_name, last_name, role_id, email, password, address, phone } = userData;
     const { rows } = await pool.query(
-        'INSERT INTO "users" (identity_card, first_name, last_name, role_id, email, password, address, phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+        'INSERT INTO "user" (identity_card, first_name, last_name, role_id, email, password, address, phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
         [identity_card, first_name, last_name, role_id, email, password, address, phone]
     );
     return rows[0];
@@ -40,6 +40,6 @@ export const updateUser = async (user_id, userData) => {
 };
 
 export const deleteUser = async (user_id) => {
-    const { rows } = await pool.query('DELETE FROM "user" WHERE userid = $1 RETURNING *', [user_id]);
+    const { rows } = await pool.query('DELETE FROM "user" WHERE user_id = $1 RETURNING *', [user_id]);
     return rows[0]; 
 };
