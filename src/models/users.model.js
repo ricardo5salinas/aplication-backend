@@ -18,7 +18,7 @@ export const updateUser = async (user_id, userData) => {
     const keys = Object.keys(userData);
 
     if (keys.length === 0) {
-        throw new Error('No fields provided for update');
+        throw new Error('No fields provided for update (no se recibio datos)');
     }
 
     // generar las partes dinámicas del SQL
@@ -36,10 +36,10 @@ export const updateUser = async (user_id, userData) => {
     `;
 
     const { rows } = await pool.query(query, values);
-    return rows[0]; // Puede ser undefined si no existe
+    return rows[0]; 
 };
 
 export const deleteUser = async (user_id) => {
     const { rows } = await pool.query('DELETE FROM "user" WHERE user_id = $1 RETURNING *', [user_id]);
-    return rows[0]; // Puede ser undefined si no existe
+    return rows[0]; 
 };
