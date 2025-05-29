@@ -1,9 +1,9 @@
-import { pool } from '../db.js';
+import { findAllUsers, createUser, updateUser, deleteUser } from '../models/users.model.js';
 
 export const getUsers = async (req, res) => {
     try {
-        const {rows} = await pool.query('SELECT * FROM "user"');
-        res.json(rows);
+        const users = await findAllUsers();
+        res.json(users);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: error.message });
@@ -11,34 +11,37 @@ export const getUsers = async (req, res) => {
 };
 
 export const postUsers = async (req, res) => {
-    const { identity_card, first_name, last_name, role_id, email, password, address, phone } = req.body;
     try {
-        const {rows} = await pool.query(
-            'INSERT INTO "user" (identity_card, first_name, last_name, role_id, email, password, address, phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-            [identity_card, first_name, last_name, role_id, email, password, address, phone]
-        );
-        res.json(rows[0]);
+        const newUser = await createUser(req.body);
+        res.json(newUser);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: error.message });
     }
-
 };
 
 export const putUsers = async (req, res) => {
-    const { id } = req.params;
-    const { identity_card, first_name, last_name, role_id, email, password, address, phone } = req.body;
     try {
-        const {rows} = await pool.query(
-            'UPDATE "user" SET identity_card = $1, first_name = $2, last_name = $3, role_id = $4, email = $5, password = $6, address = $7, phone = $8 WHERE id = $9 RETURNING *',
-            [identity_card, first_name, last_name, role_id, email, password, address, phone, id]
-        );
-        if (rows.length === 0) {
+        const updatedUser = await updateUser(req.params.user_id, req.body);
+        if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
-        res.json(rows[0]);
+        res.json(updatedUser);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: error.message });
     }
-}
+};
+
+export const deleteUsers = async (req, res) => {
+    try {
+        const deletedUser = await deleteUser(req.params.user_id);
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json({ message: 'User deleted successfully', user: deletedUser });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: error.message });
+    }
+};
