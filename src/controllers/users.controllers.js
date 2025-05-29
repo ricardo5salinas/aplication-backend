@@ -2,7 +2,7 @@ import { findAllUsers, createUser, updateUser, deleteUser } from '../models/user
 
 export const getUsers = async (req, res) => {
     try {
-        const users = await findAllUsers();
+        const users = await findAllUser();
         res.json(users);
     } catch (error) {
         console.error(error);
@@ -12,7 +12,7 @@ export const getUsers = async (req, res) => {
 
 export const postUsers = async (req, res) => {
     try {
-        const newUser = await createUser(req.body);
+        const newUser = await createUser();
         res.json(newUser);
     } catch (error) {
         console.error(error);

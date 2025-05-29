@@ -1,7 +1,7 @@
 import {
     findAllMeds,
     createMed,
-    updateMed,
+    updatMed,
     deleteMed
 } from '../models/meds.model.js';
 
@@ -18,7 +18,7 @@ export const getMeds = async (req, res) => {
 export const postMeds = async (req, res) => {
     try {
         const newMed = await createMed(req.body);
-        res.json(newMed);
+        res.json(newMe);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: error.message });
