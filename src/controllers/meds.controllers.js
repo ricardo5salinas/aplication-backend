@@ -4,27 +4,25 @@ import { findAllMeds,
     deleteMed
 } from '../models/meds.model.js';
 
-export const getMeds = async (req, res) => {
+export const getMeds = async (req, res, next) => {
     try {
         const meds = await findAllMeds();
         res.json(meds);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-export const postMeds = async (req, res) => {
+export const postMeds = async (req, res, next) => {
     try {
         const newMed = await createMed(req.body);
         res.json(newMed);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-export const putMeds = async (req, res) => {
+export const putMeds = async (req, res, next) => {
     try {
         const updatedMed = await updateMed(req.params.medication_id, req.body);
         if (!updatedMed) {
@@ -32,12 +30,11 @@ export const putMeds = async (req, res) => {
         }
         res.json(updatedMed);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 };
 
-export const deleteMeds = async (req, res) => {
+export const deleteMeds = async (req, res, next) => {
     try {
         const deletedMed = await deleteMed(req.params.medication_id);
         if (!deletedMed) {
@@ -45,7 +42,6 @@ export const deleteMeds = async (req, res) => {
         }
         res.json({ message: 'Medication deleted successfully', medication: deletedMed });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 };
