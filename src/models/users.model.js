@@ -11,6 +11,7 @@ export const createUser = async (userData) => {
         'INSERT INTO "user" (identity_card, first_name, last_name, role_id, email, password, address, phone) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
         [identity_card, first_name, last_name, role_id, email, password, address, phone]
     );
+
     return rows[0];
 };
 
