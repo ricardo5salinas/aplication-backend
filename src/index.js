@@ -25,7 +25,7 @@ app.use(patientRoutes);
 app.use(appointmentsRoutes);
 app.use(doctorRoutes);
 app.use(paymentRoutes);
-app.use(HandleError);
+app.use(HandleError); 
 
 app.listen(PORT)
 console.log('Server on port', PORT);
