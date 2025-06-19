@@ -12,8 +12,10 @@ export const verifyToken = (req, res, next) => {
   const token = authHeader.replace('Bearer ', '');
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // verifica expiración también
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.id;
+    req.userRole = decoded.role_id;
+    
     next();
   } catch (err) {
     if (err.name === 'TokenExpiredError') {

@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+dotenv.config();
 
 import { registerSchema, loginSchema } from '../schemas/auth.schemas.js';
 import {
@@ -23,11 +24,9 @@ export const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     const newUser = await createUser({ ...userData, password: hashedPassword });
-
-    const token = jwt.sign({ id: newUser.user_id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-
-    res.status(201).json({ token, user: newUser });
-
+    
+    delete newUser.password;
+res.status(201).json({ message: 'Usuario registrado exitosamente', user: newUser });
   } catch (err) {
     if (err.name === 'ZodError') {
       return res.status(400).json({ message: 'Datos inválidos', errors: err.errors });
@@ -41,14 +40,20 @@ export const login = async (req, res) => {
     const { email, password } = loginSchema.parse(req.body);
 
     const user = await findUserByEmail(email);
-    if (!user) return res.status(404).json({ message: 'User not Found' });
+    if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
 
-    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    const isMatch = await bcrypt.compare(password, user.password); // 
     if (!isMatch) {
-      return res.status(401).json({ message: 'invalid password' });
+      return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
 
-    const token = jwt.sign({ id: user.user_id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign(
+      { id: user.user_id, role_id: user.role_id },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
+
+    delete user.password; //ocultar contraseña
 
     res.json({ token, user });
 
@@ -59,5 +64,4 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Error al iniciar sesión', error: err.message });
   }
 };
-
 
