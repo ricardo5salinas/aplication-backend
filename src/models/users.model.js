@@ -1,5 +1,15 @@
 import { pool } from '../db.js';
 
+export const findUserByEmail = async (email) => {
+    const { rows } = await pool.query('SELECT * FROM "user" WHERE email = $1', [email]);
+    return rows[0];
+};
+
+export const findUserByIdentityCard = async (identity_card) => {
+    const { rows } = await pool.query('SELECT * FROM "user" WHERE identity_card = $1', [identity_card]);
+    return rows[0];
+};
+
 export const findAllUsers = async () => {
     const { rows } = await pool.query('SELECT * FROM "user"');
     return rows;
