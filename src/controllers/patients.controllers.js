@@ -18,9 +18,13 @@ export const postPatients = async (req, res, next) => {
         const newPatient = await createPatient(req.body);
         res.json(newPatient);
     } catch (error) {
+        if (error.code === 'P2002') {
+        return res.status(400).json({ message: 'Identity Card Registred' });
+        }
         next(error);
     }
 };
+
 
 export const putPatients = async (req, res, next) => {
     try {
