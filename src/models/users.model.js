@@ -96,12 +96,32 @@ export const updateUser = async (user_id, data) => {
     }
 
     export const deleteUser = async (user_id) => {
-    const existingUser = await prisma.user.findUnique({
-        where: { user_id: parseInt(user_id) },
-    })
-    if (!existingUser) return null
+    const id = parseInt(user_id);
 
-    return await prisma.user.delete({
-        where: { user_id: parseInt(user_id) },
-    })
+    // Busca el doctor relacionado (si existe)
+    const doctor = await prisma.doctor.findUnique({
+        where: { user_id: id }
+    });
+
+    if (doctor) {
+        // Elimina citas asociadas al doctor
+        await prisma.appointment.deleteMany({
+            where: { doctor_id: doctor.doctor_id }
+        });
+
+        // Elimina especialidades asociadas al doctor
+        await prisma.doctor_specialty.deleteMany({
+            where: { doctor_id: doctor.doctor_id }
+        });
+
+        // Elimina el registro de doctor
+        await prisma.doctor.deleteMany({
+            where: { user_id: id }
+        });
     }
+
+    // Ahora elimina el usuario
+    return await prisma.user.delete({
+        where: { user_id: id }
+    });
+}

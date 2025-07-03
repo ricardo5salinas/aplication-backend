@@ -18,7 +18,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Cambia al dominio 
+  origin: 'http://localhost:3000', // Cambia al dominio 
 }));
 
 app.use(express.json());

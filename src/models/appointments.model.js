@@ -50,15 +50,21 @@ export const findAllAppointments = async () => {
     };
 
     export const createAppointment = async (data) => {
-    return await prisma.appointment.create({
-        data,
-        include: {
-        patient: true,
-        doctor: true,
-        payment: true,
-        medication: true,
-        },
-    });
+        // Convierte la fecha a objeto Date si es string
+        const appointmentData = {
+            ...data,
+            date: new Date(data.date), 
+        };
+
+        return await prisma.appointment.create({
+            data: appointmentData,
+            include: {
+                patient: true,
+                doctor: true,
+                payment: true,
+                medication: true,
+            },
+        });
     };
 
     export const updateAppointment = async (id, data) => {
